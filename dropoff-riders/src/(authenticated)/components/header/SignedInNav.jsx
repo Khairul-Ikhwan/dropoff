@@ -6,6 +6,7 @@ function SignedInNav() {
       <section className="flex flex-col">
         <p className="font-bold">Dropoff</p>
         <p className="text-xs">Welcome, Khairul Ikhwan</p>
+        {/* <p className="text-xs">1 Active Job</p> */}
       </section>
       <BellIcon className="w-6 h-6 hover:cursor-pointer hover:scale-75" />
     </div>
