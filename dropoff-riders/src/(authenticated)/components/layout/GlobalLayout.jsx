@@ -3,16 +3,15 @@ import SignedInNav from "../header/SignedInNav";
 
 function GlobalLayout({ children }) {
   return (
-    <div className="flex flex-col justify-between h-screen gap-2 grow outline">
-      <div className="flex flex-col gap-2 px-4 py-2 grow">
-        <section className="flex items-center px-2 py-3 border rounded shadow-lg h-fit bg-sky-100 border-black/20">
-          <SignedInNav />
-        </section>
-        <div className="px-2 py-3 bg-white rounded shadow-lg grow">
-          {children}
-        </div>
+    <div className="flex flex-col content-between h-screen">
+      <section className="flex items-center px-2 py-3 text-white bg-black border shadow-lg h-fit border-black/20">
+        <SignedInNav />
+      </section>
+      <div className="flex flex-col px-4 py-3 overflow-y-scroll bg-white rounded shadow-lg grow">
+        {children}
       </div>
-      <section className="p-2 border-t shadow-lg h-fit border-slate-500/20">
+
+      <section className="p-2 text-white bg-black shadow-lg h-fit">
         <Footer />
       </section>
     </div>
