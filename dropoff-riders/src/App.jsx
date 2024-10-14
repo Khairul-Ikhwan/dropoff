@@ -19,6 +19,10 @@ function App() {
         <Routes>
           <Route path="/" element={<JobsPage />} />
           <Route path="/active" element={<ActivePage />} />
+          <Route path="/completed" element={<h1>Completed Jobs</h1>} />
+          <Route path="/settings" element={<h1>Settings</h1>} />
+
+          <Route path="*" element={<h1>404 - Page Not Found</h1>} />
         </Routes>
       </GlobalLayout>
     </>

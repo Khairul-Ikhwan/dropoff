@@ -25,14 +25,22 @@ function Footer() {
         <BiWallet />
         <p className="text-center">wallet</p>
       </section> */}
-      <section className="flex flex-col items-center content-between justify-center w-1/4 gap-2">
-        <CheckIcon />
-        <p className="text-center">completed</p>
-      </section>
-      <section className="flex flex-col items-center content-between justify-center w-1/4 gap-2">
-        <GearIcon />
-        <p className="text-center">settings</p>
-      </section>
+      <div className="w-1/4">
+        <Link to="/completed">
+          <section className="flex flex-col items-center content-between justify-center gap-2">
+            <CheckIcon />
+            <p className="text-center">completed</p>
+          </section>
+        </Link>
+      </div>
+      <div className="w-1/4">
+        <Link to="/settings">
+          <section className="flex flex-col items-center content-between justify-center gap-2">
+            <GearIcon />
+            <p className="text-center">settings</p>
+          </section>
+        </Link>
+      </div>
     </div>
   );
 }

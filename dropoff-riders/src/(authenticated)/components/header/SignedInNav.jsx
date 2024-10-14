@@ -1,4 +1,4 @@
-import { BellIcon } from "@radix-ui/react-icons";
+import { FiMessageSquare } from "react-icons/fi";
 
 function SignedInNav() {
   return (
@@ -8,7 +8,7 @@ function SignedInNav() {
         <p className="text-xs">Welcome, Khairul Ikhwan</p>
         {/* <p className="text-xs">1 Active Job</p> */}
       </section>
-      <BellIcon className="w-8 h-8 mr-4 hover:cursor-pointer hover:scale-75" />
+      <FiMessageSquare className="w-8 h-8 hover:cursor-pointer hover:scale-75" />
     </div>
   );
 }
