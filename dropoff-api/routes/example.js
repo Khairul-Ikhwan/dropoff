@@ -1,6 +1,6 @@
 import express from "express";
 import * as ExampleController from "../controllers/example.js";
-import { validateRequest } from "../lib/middleware.js";
+import { validateRequest } from "../utils/middleware.js";
 
 const exampleRouter = express.Router();
 
