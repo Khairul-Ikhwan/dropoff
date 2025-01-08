@@ -40,7 +40,7 @@ const calculatePrice = (distance, jobType) => {
   price += rates.platformFee;
 
   // Round to 1 decimal point
-  return Math.round(price * 10) / 10;
+  return Math.round(((price * 10) / 10) * 0.83);
 };
 
 export const calculateDistance = async (req, res) => {
