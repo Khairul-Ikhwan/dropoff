@@ -31,6 +31,14 @@ jobs:
         run: |
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api
 
+      - name: Build Frontend Docker image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend ./dropoff-calculator-frontend
+
+      - name: Push Frontend Docker image to Google Container Registry
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api
+
       - name: Deploy to Google Cloud Run
         run: |
           gcloud run deploy dropoff-api \

@@ -1,17 +1,18 @@
+# Use the official Node.js image as the base image
 FROM node:23-alpine
 
-WORKDIR /app
+# Set the working directory
+WORKDIR /
 
-COPY package.json .
-
+# Copy package.json and install dependencies
+COPY package*.json ./
 RUN npm install
 
-RUN npm i -g serve
-
+# Copy the rest of the project files
 COPY . .
 
-RUN npm run build
+# Expose port 5050 (default for Cloud Run)
+EXPOSE 5050
 
-EXPOSE 5173
-
-CMD [ "serve", "-s", "dist" ]
+# Start the server
+CMD ["node", "server.js"]
