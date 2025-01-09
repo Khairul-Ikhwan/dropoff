@@ -7,8 +7,22 @@ import { PORT } from "./utils/consts.js";
 import { exampleRouter } from "./routes/example.js";
 import { distanceCalcRouter } from "./routes/distanceCalc/distanceCalc.js";
 
+const allowedOrigins = ["http://localhost:5173", "https://dropoff.delivery"];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(morgan("dev"));
 

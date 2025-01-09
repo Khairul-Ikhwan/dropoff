@@ -63,8 +63,8 @@ export const calculateDistance = async (req, res) => {
       const price = calculatePrice(distance, jobType);
 
       return res.status(200).json({
-        startLocation: response.origin_addresses[0],
-        endLocation: response.destination_addresses[0],
+        origins: response.origin_addresses[0],
+        destinations: response.destination_addresses[0],
         distance: response.rows[0].elements[0].distance.value / 1000,
         price,
       });
