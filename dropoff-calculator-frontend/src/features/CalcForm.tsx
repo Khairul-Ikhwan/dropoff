@@ -65,7 +65,6 @@ function CalcForm() {
         });
       }
 
-      console.log("Response JSON:", data);
       setCalculated(true); // Proceed to CalcDisplay on success
     } catch (error) {
       console.error("Error:", error);
@@ -76,7 +75,6 @@ function CalcForm() {
     }
 
     // Log form values to console
-    console.log("Form Values:", formValues);
   };
 
   return (

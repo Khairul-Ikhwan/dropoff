@@ -1,2 +1,1 @@
-export const apiURL: string =
-  "https://dropoff-api-317096525503.asia-southeast1.run.app";
+export const apiURL: string = "https://api.dropoff.delivery"; // For dev env set this to "http://localhost:5050"
