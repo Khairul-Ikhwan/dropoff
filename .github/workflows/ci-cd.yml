@@ -11,23 +11,24 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "23"
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v0
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          version: "latest"
+          service_account_key: ${{ secrets.GOOGLE_CLOUD_KEYFILE_JSON }}
 
       - name: Build API Docker image
         run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api ./dropoff-api
 
-      - name: Push Docker image to Google Container Registry
+      - name: Push API Docker image to Google Container Registry
         run: |
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api
 
@@ -39,7 +40,7 @@ jobs:
         run: |
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend
 
-      - name: Deploy to Google Cloud Run
+      - name: Deploy API to Google Cloud Run
         run: |
           gcloud run deploy dropoff-api \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api \
