@@ -1,52 +1,40 @@
-name: CI/CD Pipeline
+name: Deploy to Google Cloud Run
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.4.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          version: "367.0.0" # or the latest version
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          node-version: "16"
 
-      - name: Dockerize dropoff-api
-        working-directory: ./dropoff-api
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_file_path: ${{ secrets.GCP_CREDENTIALS }} # Point to your credentials file
+
+      - name: Build Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api:${GITHUB_SHA} .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api:${GITHUB_SHA}
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api .
 
-      - name: Dockerize dropoff-calculator-frontend
-        working-directory: ./dropoff-calculator-frontend
+      - name: Push Docker image to Google Container Registry
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend:${GITHUB_SHA} .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend:${GITHUB_SHA}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api
 
-      - name: Deploy dropoff-api to Google Cloud Run
+      - name: Deploy to Google Cloud Run
         run: |
           gcloud run deploy dropoff-api \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api:${GITHUB_SHA} \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api \
             --platform managed \
-            --region us-central1 \
-            --allow-unauthenticated
-
-      - name: Deploy dropoff-calculator-frontend to Google Cloud Run
-        run: |
-          gcloud run deploy dropoff-calculator-frontend \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend:${GITHUB_SHA} \
-            --platform managed \
-            --region us-central1 \
+            --region asia-southeast1 \
             --allow-unauthenticated
