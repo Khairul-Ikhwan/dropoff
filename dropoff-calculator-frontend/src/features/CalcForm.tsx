@@ -7,6 +7,10 @@ function CalcForm() {
   const [calculated, setCalculated] = useState(false);
   const [error, setError] = useState<string | null>(null); // State to hold error message
 
+  const handleTelegramGroup = () => {
+    window.open("https://t.me/dropoffsg", "_blank"); // Open external link in a new tab
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -126,7 +130,12 @@ function CalcForm() {
 
           {/* Display error message if there's an error */}
           {error && <p className="text-sm text-red-500">{error}</p>}
-
+          <button
+            className="w-full border border-white/25 hover:bg-white hover:border-white-600 hover:text-black hover:border-2 bg-sky-600"
+            onClick={handleTelegramGroup}
+          >
+            Join Our Telegram Group
+          </button>
           <button
             className="border border-white/25 hover:bg-white hover:border-sky-600 hover:text-black hover:border-2 bg-emerald-600"
             type="submit"

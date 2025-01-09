@@ -11,7 +11,7 @@ function CalcDisplay({ setCalculated }: CalcDisplayProps) {
   const distance = usePriceStore((state) => state.distance);
 
   const handleTelegramGroup = () => {
-    window.location.href = "https://t.me/dropoffsg"; // Open external link
+    window.open("https://t.me/dropoffsg", "_blank"); // Open external link in a new tab
   };
 
   return (
