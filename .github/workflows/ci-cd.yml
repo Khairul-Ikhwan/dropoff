@@ -27,7 +27,12 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           export_default_credentials: true
 
-      # Step 4: Create Docker repositories in Artifact Registry
+      # Step 4: Authenticate Docker with Google Cloud Artifact Registry
+      - name: Authenticate Docker
+        run: |
+          gcloud auth configure-docker asia-southeast1-docker.pkg.dev
+
+      # Step 5: Create Docker repositories in Artifact Registry
       - name: Create Docker repositories for API and Frontend
         run: |
           gcloud artifacts repositories create dropoff-api \
@@ -40,19 +45,19 @@ jobs:
             --location=asia-southeast1 \
             --description="Docker repository for Dropoff Frontend" || echo "Repository dropoff-calculator-frontend already exists"
 
-      # Step 5: Build and push API Docker image
+      # Step 6: Build and push API Docker image
       - name: Build and push API Docker image
         run: |
           docker build -t asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-api/dropoff-api ./dropoff-api
           docker push asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-api/dropoff-api
 
-      # Step 6: Build and push Frontend Docker image
+      # Step 7: Build and push Frontend Docker image
       - name: Build and push Frontend Docker image
         run: |
           docker build -t asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend/dropoff-calculator-frontend ./dropoff-calculator-frontend
           docker push asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend/dropoff-calculator-frontend
 
-      # Step 7: Deploy API to Google Cloud Run
+      # Step 8: Deploy API to Google Cloud Run
       - name: Deploy API to Google Cloud Run
         run: |
           gcloud run deploy dropoff-api \
@@ -61,7 +66,7 @@ jobs:
             --region asia-southeast1 \
             --allow-unauthenticated
 
-      # Step 8: Deploy Frontend to Google Cloud Run
+      # Step 9: Deploy Frontend to Google Cloud Run
       - name: Deploy Frontend to Google Cloud Run
         run: |
           gcloud run deploy dropoff-calculator-frontend \
