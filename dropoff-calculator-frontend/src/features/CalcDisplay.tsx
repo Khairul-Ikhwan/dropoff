@@ -17,14 +17,17 @@ function CalcDisplay({ setCalculated }: CalcDisplayProps) {
   return (
     <div className="flex flex-col items-start w-full gap-3">
       <h2 className="text-2xl font-semibold">Calculated Details</h2>
-      <p>Recommended Price: ${price.toFixed(2)}</p>
-      <p>Pick Up: {origins.join(", ")}</p>
-      <p>Drop Off: {destinations.join(", ")}</p>
-      <p>Distance: {distance.toFixed(2)} km</p>
+      <div className="flex flex-col gap-1">
+        <p>Recommended Price: ${price.toFixed(2)}</p>
+        <p>Pick Up: {origins.join(", ")}</p>
+        <p>Drop Off: {destinations.join(", ")}</p>
+        <p>Distance: {distance.toFixed(2)} km</p>
+      </div>
 
-      <p className="text-xs italic opacity-30 text-pretty">
-        The price displayed here is a recommendation. The amount is calculated
-        closely based on Lalamove's prices for the car and motorcycle modes.
+      <p className="text-xs italic font-semibold opacity-45 text-pretty">
+        The amount is calculated closely based on Lalamove's prices for the car
+        and motorcycle modes. This calculator is intended to provide an estimate
+        of the price, and in no way can be enforced by any party.
       </p>
 
       <button

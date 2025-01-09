@@ -1,6 +1,7 @@
 import { usePriceStore } from "../utils/priceStore";
 import { useState } from "react";
 import CalcDisplay from "./CalcDisplay";
+import { apiURL } from "../utils/consts.ts";
 
 function CalcForm() {
   const [calculated, setCalculated] = useState(false);
@@ -21,16 +22,13 @@ function CalcForm() {
     setError(null);
 
     try {
-      const response = await fetch(
-        "http://localhost:5050/calculate-distance/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formValues),
-        }
-      );
+      const response = await fetch(`${apiURL}/calculate-distance/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formValues),
+      });
 
       if (!response.ok) {
         // Handle HTTP errors
@@ -78,15 +76,15 @@ function CalcForm() {
   };
 
   return (
-    <div className="w-full p-8 sm:shadow-2xl sm:border sm:rounded-lg sm:border-white/55 sm:bg-slate-800">
+    <div className="w-full p-8 sm:shadow-2xl sm:max-w-[40rem] sm:border sm:rounded-lg sm:border-white/55 sm:bg-slate-800">
       {!calculated ? (
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold">Welcome to Dropoff!</h2>
-            <p className="text-sm font-light opacity-80">
+            <p className="text-sm opacity-80">
               Fill in the details and we'll calculate it for you!
             </p>
-            <p className="text-xs italic font-light opacity-80">
+            <p className="text-xs italic font-extralight opacity-80">
               This calculator is intended to provide an estimate of the price,
               and in no way can be enforced by any party.
             </p>
@@ -99,7 +97,7 @@ function CalcForm() {
               id="origin"
               name="origin"
               className="w-full p-2 rounded-lg"
-              placeholder="550 Ang Mo Kio Ave 10, Singapore 569655"
+              placeholder="eg. 550 Ang Mo Kio Ave 10, Singapore 569655"
             />
           </div>
 
@@ -110,7 +108,7 @@ function CalcForm() {
               id="destination"
               name="destination"
               className="w-full p-2 rounded-lg"
-              placeholder="55 Robinson Road, Singapore 068897"
+              placeholder="eg. 55 Robinson Road, Singapore 068897"
             />
           </div>
 
