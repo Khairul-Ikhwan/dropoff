@@ -10,35 +10,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "23"
 
+      # Step 3: Authenticate to Google Cloud
       - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v0.6.0 # Updated version
+        uses: google-github-actions/auth@v0.6.0
         with:
           credentials_json: ${{ secrets.GOOGLE_CLOUD_KEYFILE_JSON }}
 
-      - name: Build API Docker image
+      # Step 4: Build and push API Docker image
+      - name: Build and push API Docker image
         run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api ./dropoff-api
-
-      - name: Push API Docker image to Google Container Registry
-        run: |
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api
 
-      - name: Build Frontend Docker image
+      # Step 5: Build and push Frontend Docker image
+      - name: Build and push Frontend Docker image
         run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend ./dropoff-calculator-frontend
-
-      - name: Push Frontend Docker image to Google Container Registry
-        run: |
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend
 
+      # Step 6: Deploy API to Google Cloud Run
       - name: Deploy API to Google Cloud Run
         run: |
           gcloud run deploy dropoff-api \
