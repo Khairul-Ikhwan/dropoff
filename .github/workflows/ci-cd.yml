@@ -30,20 +30,20 @@ jobs:
       # Step 4: Build and push API Docker image
       - name: Build and push API Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api ./dropoff-api
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api
+          docker build -t asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-api ./dropoff-api
+          docker push asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-api
 
       # Step 5: Build and push Frontend Docker image
       - name: Build and push Frontend Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend ./dropoff-calculator-frontend
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend
+          docker build -t asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend ./dropoff-calculator-frontend
+          docker push asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend
 
       # Step 6: Deploy API to Google Cloud Run
       - name: Deploy API to Google Cloud Run
         run: |
           gcloud run deploy dropoff-api \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api \
+            --image asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dropoff-api \
             --platform managed \
             --region asia-southeast1 \
             --allow-unauthenticated
