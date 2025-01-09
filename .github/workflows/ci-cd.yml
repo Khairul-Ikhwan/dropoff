@@ -21,7 +21,7 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v0
         with:
-          credentials_file_path: ${{ secrets.GCP_CREDENTIALS }} # Point to your credentials file
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Build Docker image
         run: |
