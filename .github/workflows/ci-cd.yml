@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16"
+          node-version: "23"
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v0
@@ -37,12 +37,11 @@ jobs:
 
       - name: Push Frontend Docker image to Google Container Registry
         run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend
 
       - name: Deploy to Google Cloud Run
         run: |
           gcloud run deploy dropoff-api \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api \
             --platform managed \
-            --region asia-southeast1 \
-            --allow-unauthenticated
+            --region asia-southeast1
