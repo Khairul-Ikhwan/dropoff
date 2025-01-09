@@ -10,7 +10,7 @@ import { distanceCalcRouter } from "./routes/distanceCalc/distanceCalc.js";
 const allowedOrigins = [
   "http://localhost:5173",
   "https://dropoff.delivery",
-  "https://dropoff-calculator-frontend-317096525503.asia-southeast1.run.app/",
+  "https://dropoff-calculator-frontend-317096525503.asia-southeast1.run.app",
 ];
 
 const corsOptions = {
