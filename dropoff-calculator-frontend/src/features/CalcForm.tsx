@@ -78,7 +78,7 @@ function CalcForm() {
   };
 
   return (
-    <div className="w-full p-8 border rounded-lg shadow-2xl border-white/55 bg-slate-800">
+    <div className="w-full p-8 sm:shadow-2xl sm:border sm:rounded-lg sm:border-white/55 sm:bg-slate-800">
       {!calculated ? (
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1">
