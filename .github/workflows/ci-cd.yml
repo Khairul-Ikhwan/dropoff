@@ -14,17 +14,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js environment
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "23"
-
-      # Step 3: Authenticate to Google Cloud
+      # Step 2: Authenticate to Google Cloud
       - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v0.6.0
+        uses: google-github-actions/auth@v0.10.0
         with:
           credentials_json: ${{ secrets.GOOGLE_CLOUD_KEYFILE_JSON }}
+
+      # Step 3: Set up Google Cloud CLI
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
 
       # Step 4: Build and push API Docker image
       - name: Build and push API Docker image
@@ -44,4 +45,14 @@ jobs:
           gcloud run deploy dropoff-api \
             --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api \
             --platform managed \
-            --region asia-southeast1
+            --region asia-southeast1 \
+            --allow-unauthenticated
+
+      # Step 7: Deploy Frontend to Google Cloud Run
+      - name: Deploy Frontend to Google Cloud Run
+        run: |
+          gcloud run deploy dropoff-calculator-frontend \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-calculator-frontend \
+            --platform managed \
+            --region asia-southeast1 \
+            --allow-unauthenticated
