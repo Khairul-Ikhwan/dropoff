@@ -18,11 +18,15 @@ jobs:
         with:
           node-version: "23"
 
-      - name: Setup Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
+     - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
         with:
-          version: "latest"
-          service_account_key: ${{ secrets.GOOGLE_CLOUD_KEYFILE_JSON }}
+        credentials_json: ${{ secrets.GOOGLE_CLOUD_KEYFILE_JSON }} 
+
+      - name: Setup Google Cloud SDK
+          uses: google-github-actions/setup-gcloud@v1
+          with:
+        version: latest
 
       - name: Build API Docker image
         run: |
