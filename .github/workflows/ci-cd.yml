@@ -23,9 +23,9 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: Build Docker image
+      - name: Build API Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff-api .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/dropoff/dropoff-api .
 
       - name: Push Docker image to Google Container Registry
         run: |
