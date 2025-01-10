@@ -7,12 +7,20 @@ const calculatePrice = (distance, jobType) => {
       first10Km: 0.3, // 1-10km
       perKm: 0.4, // subsequent km
       platformFee: 0.5,
+      additionalStop: 3,
     },
     car: {
       base: 12, // under 1km
       first3Km: 1, // 1-3km
       perKm: 0.45, // subsequent km
       platformFee: 0.5,
+      additionalStop: 5,
+    },
+    van: {
+      base: 19,
+      perKm: 0.5,
+      platformFee: 0.5,
+      additionalStop: 6,
     },
   };
 
@@ -35,6 +43,8 @@ const calculatePrice = (distance, jobType) => {
     } else if (distance > 3) {
       price += 2 * rates.first3Km + (distance - 3) * rates.perKm;
     }
+  } else if (jobType === "van") {
+    price += distance * rates.perKm;
   }
 
   price += rates.platformFee;
@@ -62,6 +72,7 @@ export const calculateDistance = async (req, res) => {
       const distance = response.rows[0].elements[0].distance.value / 1000; // Convert meters to km
       const price = calculatePrice(distance, jobType);
 
+      console.log(price);
       return res.status(200).json({
         origins: response.origin_addresses[0],
         destinations: response.destination_addresses[0],

@@ -123,6 +123,7 @@ function CalcForm() {
             >
               <option value="bike">Motorcycle</option>
               <option value="car">Car</option>
+              <option value="van">Van</option>
             </select>
           </div>
 
