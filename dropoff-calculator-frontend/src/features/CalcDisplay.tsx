@@ -34,7 +34,10 @@ function CalcDisplay({ setCalculated }: CalcDisplayProps) {
         className="w-full border border-white/25 hover:bg-white hover:border-white-600 hover:text-black hover:border-2 bg-sky-600"
         onClick={handleTelegramGroup}
       >
-        Join Our Telegram Group
+        <span className="flex items-center justify-center w-full gap-3">
+          <img src="/assets/telegram.png" className="w-8" />
+          Click here to provide feedback
+        </span>
       </button>
       <button
         className="w-full border border-white/25 hover:bg-white hover:border-sky-600 hover:text-black hover:border-2 bg-emerald-600"

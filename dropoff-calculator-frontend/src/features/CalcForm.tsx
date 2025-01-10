@@ -6,6 +6,7 @@ import { apiURL } from "../utils/consts.ts";
 function CalcForm() {
   const [calculated, setCalculated] = useState(false);
   const [error, setError] = useState<string | null>(null); // State to hold error message
+  const [loading, setLoading] = useState(false); // State to hold loading status
 
   const handleTelegramGroup = () => {
     window.open("https://t.me/dropoffsg", "_blank"); // Open external link in a new tab
@@ -13,6 +14,7 @@ function CalcForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const form = e.currentTarget;
 
     // Use FormData to extract form values
@@ -36,6 +38,7 @@ function CalcForm() {
 
       if (!response.ok) {
         // Handle HTTP errors
+        setLoading(false);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -64,9 +67,10 @@ function CalcForm() {
           distance: validDistance,
         });
       }
-
+      setLoading(false);
       setCalculated(true); // Proceed to CalcDisplay on success
     } catch (error) {
+      setLoading(false);
       console.error("Error:", error);
       setError("Something went wrong. Please try again later."); // Set error message
       setTimeout(() => {
@@ -133,13 +137,17 @@ function CalcForm() {
             className="w-full border border-white/25 hover:bg-white hover:border-white-600 hover:text-black hover:border-2 bg-sky-600"
             onClick={handleTelegramGroup}
           >
-            Join Our Telegram Group
+            <span className="flex items-center justify-center w-full gap-3">
+              <img src="/assets/telegram.png" className="w-8" />
+              Click here to provide feedback
+            </span>
           </button>
           <button
             className="border border-white/25 hover:bg-white hover:border-sky-600 hover:text-black hover:border-2 bg-emerald-600"
             type="submit"
+            disabled={loading}
           >
-            Submit
+            {loading ? "Checking Price..." : "Submit"}
           </button>
         </form>
       ) : (

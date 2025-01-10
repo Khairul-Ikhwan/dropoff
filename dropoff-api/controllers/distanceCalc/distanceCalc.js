@@ -64,7 +64,7 @@ export const calculateDistance = async (req, res) => {
 
     // Fetch distance from Google Maps API
     const data = await fetch(
-      `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${GOOGLE_MAPS_API_KEY}`
+      `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${GOOGLE_MAPS_API_KEY}&region=sg`
     );
     const response = await data.json();
 
@@ -72,7 +72,6 @@ export const calculateDistance = async (req, res) => {
       const distance = response.rows[0].elements[0].distance.value / 1000; // Convert meters to km
       const price = calculatePrice(distance, jobType);
 
-      console.log(price);
       return res.status(200).json({
         origins: response.origin_addresses[0],
         destinations: response.destination_addresses[0],
