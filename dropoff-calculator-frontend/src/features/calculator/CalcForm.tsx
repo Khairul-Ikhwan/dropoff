@@ -1,7 +1,7 @@
-import { usePriceStore } from "../utils/priceStore";
+import { usePriceStore } from "../../utils/priceStore.tsx";
 import { useState } from "react";
 import CalcDisplay from "./CalcDisplay";
-import { apiURL } from "../utils/consts.ts";
+import { apiURL } from "../../utils/consts.ts";
 
 function CalcForm() {
   const [calculated, setCalculated] = useState(false);

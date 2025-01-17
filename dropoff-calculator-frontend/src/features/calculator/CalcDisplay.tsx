@@ -1,4 +1,4 @@
-import { usePriceStore } from "../utils/priceStore";
+import { usePriceStore } from "../../utils/priceStore";
 
 interface CalcDisplayProps {
   setCalculated: (value: boolean) => void;
