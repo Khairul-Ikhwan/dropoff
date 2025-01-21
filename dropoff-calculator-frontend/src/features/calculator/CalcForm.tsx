@@ -2,29 +2,26 @@ import { usePriceStore } from "../../utils/priceStore.tsx";
 import { useState } from "react";
 import CalcDisplay from "./CalcDisplay";
 import { apiURL } from "../../utils/consts.ts";
+import InputAutocomplete from "./components/InputAutocomplete.tsx";
 
 function CalcForm() {
   const [calculated, setCalculated] = useState(false);
-  const [error, setError] = useState<string | null>(null); // State to hold error message
-  const [loading, setLoading] = useState(false); // State to hold loading status
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleTelegramGroup = () => {
-    window.open("https://t.me/dropoffsg", "_blank"); // Open external link in a new tab
-  };
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const form = e.currentTarget;
 
-    // Use FormData to extract form values
-    const formData = new FormData(form);
-    const formValues: { [key: string]: string } = {};
-    formData.forEach((value, key) => {
-      formValues[key] = value.toString();
-    });
+    const formValues = {
+      origin,
+      destination,
+      jobType: e.currentTarget.jobType.value, // Extract jobType from form
+    };
 
-    // Clear any previous errors
     setError(null);
 
     try {
@@ -37,111 +34,64 @@ function CalcForm() {
       });
 
       if (!response.ok) {
-        // Handle HTTP errors
         setLoading(false);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      const validOrigins = Array.isArray(data.origins)
-        ? data.origins
-        : [data.origins];
-      const validDestinations = Array.isArray(data.destinations)
-        ? data.destinations
-        : [data.destinations];
-      const validDistance =
-        typeof data.distance === "number" ? data.distance : 0;
+      usePriceStore.getState().setAll(data);
 
-      const { price, origins, destinations, distance } =
-        usePriceStore.getState();
-      if (
-        price !== data.price ||
-        JSON.stringify(origins) !== JSON.stringify(data.origins) ||
-        JSON.stringify(destinations) !== JSON.stringify(data.destinations) ||
-        distance !== data.distance
-      ) {
-        usePriceStore.getState().setAll({
-          price: data.price,
-          origins: validOrigins,
-          destinations: validDestinations,
-          distance: validDistance,
-        });
-      }
       setLoading(false);
-      setCalculated(true); // Proceed to CalcDisplay on success
+      setCalculated(true);
     } catch (error) {
       setLoading(false);
-      console.error("Error:", error);
-      setError("Something went wrong. Please try again later."); // Set error message
-      setTimeout(() => {
-        setError(null);
-      }, 2000); // Clear error message after 5 seconds
+      setError("Something went wrong. Please try again later.");
+      console.error(error);
     }
-
-    // Log form values to console
   };
 
   return (
-    <div className="w-full p-8 sm:shadow-2xl sm:max-w-[40rem] sm:border sm:rounded-lg sm:border-white/55 sm:bg-slate-800">
+    <div className="w-full p-8 sm:shadow-2xl sm:max-w-[40rem] sm:border sm:rounded-lg sm:border-white/55 sm:bg-slate-800 flex flex-col gap-4">
+      <h2 className="text-2xl">Welcome to Dropoff!</h2>
+      <span className="text-sm">
+        <p>Fill in the details and we'll calculate it for you!</p>
+
+        <p className="text-xs italic opacity-45 text-pretty">
+          This calculator is intended to provide an estimate of the price, and
+          in no way can be enforced by any party.
+        </p>
+      </span>
+
       {!calculated ? (
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-1">
-            <h2 className="text-2xl font-bold">Welcome to Dropoff!</h2>
-            <p className="text-sm opacity-80">
-              Fill in the details and we'll calculate it for you!
-            </p>
-            <p className="text-xs italic font-extralight opacity-80">
-              This calculator is intended to provide an estimate of the price,
-              and in no way can be enforced by any party.
-            </p>
-          </div>
-
           <div className="flex flex-col items-start w-full gap-1">
             <label htmlFor="origin">Pickup Location:</label>
-            <input
-              type="text"
-              id="origin"
-              name="origin"
-              className="w-full p-2 rounded-lg"
-              placeholder="eg. 550 Ang Mo Kio Ave 10, Singapore 569655"
-            />
+            <InputAutocomplete value={origin} onChange={setOrigin} />
           </div>
 
           <div className="flex flex-col items-start w-full gap-1">
-            <label htmlFor="dropoff">Dropoff Location:</label>
-            <input
-              type="text"
-              id="destination"
-              name="destination"
-              className="w-full p-2 rounded-lg"
-              placeholder="eg. 55 Robinson Road, Singapore 068897"
-            />
+            <label htmlFor="destination">Dropoff Location:</label>
+            <InputAutocomplete value={destination} onChange={setDestination} />
           </div>
 
           <div className="flex flex-col items-start w-full gap-1">
-            <label htmlFor="dropoff">Job Type:</label>
-            <select
-              className="w-full p-2 rounded-lg"
-              name="jobType"
-              id="jobType"
-            >
-              <option value="bike">Motorcycle</option>
-              <option value="car">Car</option>
-              <option value="van">Van</option>
-            </select>
+            <label htmlFor="jobType">Job Type:</label>
+
+            <div className="w-full px-2">
+              <select
+                className="w-full p-2 rounded-lg"
+                name="jobType"
+                id="jobType"
+              >
+                <option value="bike">Motorcycle</option>
+                <option value="car">Car</option>
+                <option value="van">Van</option>
+              </select>
+            </div>
           </div>
 
-          {/* Display error message if there's an error */}
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <button
-            className="w-full border border-white/25 hover:bg-white hover:border-white-600 hover:text-black hover:border-2 bg-sky-600"
-            onClick={handleTelegramGroup}
-          >
-            <span className="flex items-center justify-center w-full gap-3">
-              <img src="/assets/telegram.png" className="w-8" />
-              Click here to provide feedback
-            </span>
-          </button>
+
           <button
             className="border border-white/25 hover:bg-white hover:border-sky-600 hover:text-black hover:border-2 bg-emerald-600"
             type="submit"
@@ -151,7 +101,13 @@ function CalcForm() {
           </button>
         </form>
       ) : (
-        <CalcDisplay setCalculated={setCalculated} />
+        <CalcDisplay
+          setCalculated={(value: boolean) => {
+            setCalculated(value);
+            setOrigin(""); // Clear the input value for origin
+            setDestination(""); // Clear the input value for destination
+          }}
+        />
       )}
     </div>
   );

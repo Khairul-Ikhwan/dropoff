@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import { apiURL } from "../../../utils/consts";
 
-function InputAutocomplete() {
-  const [inputValue, setInputValue] = useState("");
+function InputAutocomplete({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const [inputValue, setInputValue] = useState(value);
   const [debouncedValue, setDebouncedValue] = useState("");
   interface AutocompleteResult {
     description: string;
@@ -18,6 +24,7 @@ function InputAutocomplete() {
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     setUserSelected(false);
+    onChange(e.target.value); // Notify parent about input changes
   };
 
   useEffect(() => {
@@ -54,7 +61,6 @@ function InputAutocomplete() {
           }
 
           const data = await response.json();
-          console.log(data);
           setAutocompleteResults(data.predictions || []);
           setShowAutocompleteResults(true);
         } catch (error) {
@@ -71,25 +77,29 @@ function InputAutocomplete() {
   }, [debouncedValue]);
 
   return (
-    <div className="p-2 outline">
+    <div className="relative w-full p-2">
       <input
         className="w-full p-2 rounded-lg min-w-64"
-        placeholder="eg. 550 Ang Mo Kio Ave 10, Singapore 569655"
+        placeholder="Search location"
         value={inputValue}
         onChange={handleInput}
       />
       {!loading && showAutocompleteResults && (
-        <>
-          <ul className="fixed flex flex-col w-64 h-32 mt-2 overflow-y-auto divide-y-2 bg-slate-400">
+        <span>
+          <ul
+            className="absolute z-10 w-[96%] divide-y mx-auto mt-1 overflow-y-auto border border-gray-300 rounded shadow bg-slate-400 max-h-48"
+            style={{ top: "100%" }}
+          >
             {autocompleteResults.map((result, index) => (
               <li
                 key={index}
-                className="p-2 text-sm hover:bg-gray-200 hover:text-black hover:cursor-pointer"
+                className="p-2 text-sm cursor-pointer hover:bg-gray-200 hover:text-black"
                 onClick={() => {
                   setInputValue(result.description);
                   setShowAutocompleteResults(false);
                   setDebouncedValue("");
                   setUserSelected(true);
+                  onChange(result.description); // Notify parent when a value is selected
                 }}
               >
                 {result.description}
@@ -97,9 +107,9 @@ function InputAutocomplete() {
             ))}
           </ul>
           {showAutocompleteResults && error && (
-            <p className="text-sm opacity-35">{error}</p>
+            <p className="mt-2 text-sm text-red-500 ">{error}</p>
           )}
-        </>
+        </span>
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import * as DistCalcController from "../../controllers/distanceCalc/distanceCalc
 
 const distanceCalcRouter = express.Router();
 
-const calculatorRateLimit = createRateLimiter(20);
+const calculatorRateLimit = createRateLimiter(50);
 distanceCalcRouter.post(
   "/",
   rateLimiter,
@@ -13,7 +13,7 @@ distanceCalcRouter.post(
   DistCalcController.calculateDistance
 );
 
-const searchRateLimit = createRateLimiter(20);
+const searchRateLimit = createRateLimiter(50);
 distanceCalcRouter.post(
   "/complete-search",
   searchRateLimit,

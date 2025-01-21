@@ -14,13 +14,22 @@ function CalcDisplay({ setCalculated }: CalcDisplayProps) {
     window.open("https://t.me/dropoffsg", "_blank"); // Open external link in a new tab
   };
 
+  const clearData = () => {
+    usePriceStore.setState({
+      price: 0,
+      origins: [],
+      destinations: [],
+      distance: 0,
+    });
+  };
+
   return (
     <div className="flex flex-col items-start w-full gap-3">
       <h2 className="text-2xl font-semibold">Calculated Details</h2>
       <div className="flex flex-col gap-1">
         <p>Recommended Price: ${price.toFixed(2)}</p>
-        <p>Pick Up: {origins.join(", ")}</p>
-        <p>Drop Off: {destinations.join(", ")}</p>
+        <p>Pick Up: {origins}</p>
+        <p>Drop Off: {destinations}</p>
         <p>Distance: {distance.toFixed(2)} km</p>
       </div>
 
@@ -41,7 +50,10 @@ function CalcDisplay({ setCalculated }: CalcDisplayProps) {
       </button>
       <button
         className="w-full border border-white/25 hover:bg-white hover:border-sky-600 hover:text-black hover:border-2 bg-emerald-600"
-        onClick={() => setCalculated(false)}
+        onClick={() => {
+          setCalculated(false);
+          clearData();
+        }}
       >
         Go Back
       </button>
