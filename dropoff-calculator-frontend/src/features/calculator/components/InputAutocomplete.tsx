@@ -61,7 +61,6 @@ function InputAutocomplete({
           }
 
           const data = await response.json();
-          console.log(data);
           setAutocompleteResults(data.predictions || []);
           setShowAutocompleteResults(true);
         } catch (error) {
@@ -85,14 +84,15 @@ function InputAutocomplete({
         value={inputValue}
         onChange={handleInput}
       />
-      {!loading && showAutocompleteResults && (
-        <span>
-          <ul
-            className="absolute z-10 w-[96%] divide-y mx-auto mt-1 overflow-y-auto border border-gray-300 rounded shadow bg-slate-400 min-h-20 max-h-48 text-white"
-            style={{ top: "100%" }}
-          >
-            {autocompleteResults &&
-              autocompleteResults.map((result, index) => (
+      {!loading &&
+        showAutocompleteResults &&
+        autocompleteResults.length > 0 && (
+          <span>
+            <ul
+              className="absolute z-10 w-[96%] divide-y mx-auto mt-1 overflow-y-auto border border-gray-300 rounded shadow bg-slate-400 min-h-20 max-h-48 text-white"
+              style={{ top: "100%" }}
+            >
+              {autocompleteResults.map((result, index) => (
                 <li
                   key={index}
                   className="p-2 text-sm text-white cursor-pointer hover:bg-gray-200 hover:text-black"
@@ -107,12 +107,12 @@ function InputAutocomplete({
                   {result.description}
                 </li>
               ))}
-          </ul>
-          {showAutocompleteResults && error && (
-            <p className="mt-2 text-sm text-red-500 ">{error}</p>
-          )}
-        </span>
-      )}
+            </ul>
+            {showAutocompleteResults && error && (
+              <p className="mt-2 text-sm text-red-500 ">{error}</p>
+            )}
+          </span>
+        )}
     </div>
   );
 }
