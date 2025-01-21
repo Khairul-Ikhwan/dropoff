@@ -61,6 +61,7 @@ function InputAutocomplete({
           }
 
           const data = await response.json();
+          console.log(data);
           setAutocompleteResults(data.predictions || []);
           setShowAutocompleteResults(true);
         } catch (error) {
@@ -87,24 +88,25 @@ function InputAutocomplete({
       {!loading && showAutocompleteResults && (
         <span>
           <ul
-            className="absolute z-10 w-[96%] divide-y mx-auto mt-1 overflow-y-auto border border-gray-300 rounded shadow bg-slate-400 max-h-48"
+            className="absolute z-10 w-[96%] divide-y mx-auto mt-1 overflow-y-auto border border-gray-300 rounded shadow bg-slate-400 min-h-20 max-h-48 text-white"
             style={{ top: "100%" }}
           >
-            {autocompleteResults.map((result, index) => (
-              <li
-                key={index}
-                className="p-2 text-sm cursor-pointer hover:bg-gray-200 hover:text-black"
-                onClick={() => {
-                  setInputValue(result.description);
-                  setShowAutocompleteResults(false);
-                  setDebouncedValue("");
-                  setUserSelected(true);
-                  onChange(result.description); // Notify parent when a value is selected
-                }}
-              >
-                {result.description}
-              </li>
-            ))}
+            {autocompleteResults &&
+              autocompleteResults.map((result, index) => (
+                <li
+                  key={index}
+                  className="p-2 text-sm text-white cursor-pointer hover:bg-gray-200 hover:text-black"
+                  onClick={() => {
+                    setInputValue(result.description);
+                    setShowAutocompleteResults(false);
+                    setDebouncedValue("");
+                    setUserSelected(true);
+                    onChange(result.description); // Notify parent when a value is selected
+                  }}
+                >
+                  {result.description}
+                </li>
+              ))}
           </ul>
           {showAutocompleteResults && error && (
             <p className="mt-2 text-sm text-red-500 ">{error}</p>
