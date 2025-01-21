@@ -1,12 +1,14 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import CalcForm from "./features/CalcForm";
+import CalcForm from "./features/calculator/CalcForm";
+import InputAutocomplete from "./features/calculator/components/InputAutocomplete";
 
 function App() {
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen text-white sm:p-6 bg-slate-900">
       <Routes>
         <Route path="/" element={<CalcForm />} />
+        <Route path="/input-test" element={<InputAutocomplete />} />
       </Routes>
     </div>
   );

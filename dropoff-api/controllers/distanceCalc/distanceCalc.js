@@ -1,4 +1,8 @@
-import { GOOGLE_MAPS_API_KEY } from "../../utils/consts.js";
+import {
+  GOOGLE_MAPS_API_KEY,
+  GOOGLE_MAPS_JAVASCRIPT_API_KEY,
+} from "../../utils/consts.js";
+import axios from "axios";
 
 const calculatePrice = (distance, jobType) => {
   const priceList = {
@@ -7,12 +11,20 @@ const calculatePrice = (distance, jobType) => {
       first10Km: 0.3, // 1-10km
       perKm: 0.4, // subsequent km
       platformFee: 0.5,
+      additionalStop: 3,
     },
     car: {
       base: 12, // under 1km
       first3Km: 1, // 1-3km
       perKm: 0.45, // subsequent km
       platformFee: 0.5,
+      additionalStop: 5,
+    },
+    van: {
+      base: 19,
+      perKm: 0.5,
+      platformFee: 0.5,
+      additionalStop: 6,
     },
   };
 
@@ -35,6 +47,8 @@ const calculatePrice = (distance, jobType) => {
     } else if (distance > 3) {
       price += 2 * rates.first3Km + (distance - 3) * rates.perKm;
     }
+  } else if (jobType === "van") {
+    price += distance * rates.perKm;
   }
 
   price += rates.platformFee;
@@ -54,7 +68,7 @@ export const calculateDistance = async (req, res) => {
 
     // Fetch distance from Google Maps API
     const data = await fetch(
-      `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${GOOGLE_MAPS_API_KEY}`
+      `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin}&destinations=${destination}&key=${GOOGLE_MAPS_API_KEY}&region=sg`
     );
     const response = await data.json();
 
@@ -73,6 +87,94 @@ export const calculateDistance = async (req, res) => {
         .status(500)
         .json({ error: "Failed to fetch distance from Google Maps API" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const placeAutoComplete = async (req, res) => {
+  const { input } = req.body;
+
+  if (!input) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    // Check if the input is a postal code (6 digits for Singapore)
+    const isPostalCode = /^[0-9]{6}$/.test(input);
+
+    if (isPostalCode) {
+      // Step 1: Geocode the postal code to get coordinates
+      const geoResponse = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json`,
+        {
+          params: {
+            address: input,
+            key: GOOGLE_MAPS_API_KEY,
+            region: "sg", // Limit results to Singapore
+          },
+        }
+      );
+
+      const geoResults = geoResponse.data.results;
+
+      if (geoResults.length > 0) {
+        const location = geoResults[0].geometry.location;
+
+        // Step 2: Reverse geocode the coordinates to get detailed address
+        const reverseResponse = await axios.get(
+          `https://maps.googleapis.com/maps/api/geocode/json`,
+          {
+            params: {
+              latlng: `${location.lat},${location.lng}`,
+              key: GOOGLE_MAPS_API_KEY,
+              region: "sg",
+            },
+          }
+        );
+
+        const reverseResults = reverseResponse.data.results;
+
+        if (reverseResults.length > 0) {
+          return res.status(200).json({
+            type: "postal_code",
+            postalCode: input,
+            address: reverseResults[0].formatted_address,
+            location,
+          });
+        } else {
+          return res
+            .status(404)
+            .json({ error: "Reverse geocoding failed for the postal code" });
+        }
+      } else {
+        return res.status(404).json({ error: "Invalid postal code" });
+      }
+    }
+
+    // Fallback: Query Place Autocomplete API for non-postal code inputs
+    const autoResponse = await axios.get(
+      `https://maps.googleapis.com/maps/api/place/autocomplete/json`,
+      {
+        params: {
+          input,
+          key: GOOGLE_MAPS_JAVASCRIPT_API_KEY,
+          region: "sg",
+          types: "address",
+          components: "country:sg",
+        },
+      }
+    );
+
+    const predictions = autoResponse.data.predictions.map((prediction) => ({
+      description: prediction.description,
+      placeId: prediction.place_id,
+    }));
+
+    res.status(200).json({
+      type: "autocomplete",
+      predictions,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
