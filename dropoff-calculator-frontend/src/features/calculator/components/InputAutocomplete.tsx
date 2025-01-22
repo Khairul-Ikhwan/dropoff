@@ -89,7 +89,7 @@ function InputAutocomplete({
         autocompleteResults.length > 0 && (
           <span>
             <ul
-              className="absolute z-10 w-[96%] divide-y mx-auto mt-1 overflow-y-auto border border-gray-300 rounded shadow bg-slate-400 min-h-20 max-h-48 text-white"
+              className="absolute z-10 w-[96%] divide-y mx-auto mt-1 overflow-y-auto border border-gray-300 rounded shadow bg-slate-400 h-fit max-h-48 text-white"
               style={{ top: "100%" }}
             >
               {autocompleteResults.map((result, index) => (
