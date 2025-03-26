@@ -8,7 +8,9 @@ export const calcDistance = async (req, res) => {
   const { destinations } = req.body;
 
   // Sort destinations by locationIndex
-  destinations.sort((a, b) => a.locationIndex - b.locationIndex); // To make sure that the order is correct
+  const sortedDestinations = destinations.sort(
+    (a, b) => a.locationIndex - b.locationIndex
+  );
 
   const totalLocations = destinations.length;
   try {
@@ -18,9 +20,9 @@ export const calcDistance = async (req, res) => {
     for (let i = 0; i < totalLocations - 1; i++) {
       const data = await fetch(
         `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${
-          destinations[i].address
+          sortedDestinations[i].address
         }&destinations=${
-          destinations[i + 1].address
+          sortedDestinations[i + 1].address
         }&key=${GOOGLE_MAPS_API_KEY}&region=sg`
       );
       const response = await data.json();
