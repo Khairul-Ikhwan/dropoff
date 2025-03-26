@@ -6,6 +6,7 @@ import { PORT } from "./utils/consts.js";
 //import routes
 import { exampleRouter } from "./routes/example.js";
 import { distanceCalcRouter } from "./routes/distanceCalc/distanceCalc.js";
+import { calcDistanceRouter } from "./features/calculateDistance/route.js";
 
 const allowedOrigins = ["http://localhost:5173", "https://dropoff.delivery"];
 
@@ -45,7 +46,8 @@ app.get("/", (req, res) => {
 
 // routes
 app.use("/example", exampleRouter);
-app.use("/calculate-distance", distanceCalcRouter);
+app.use("/calculate-distance", distanceCalcRouter); // TODO: deprecate this route
+app.use("/calculate", calcDistanceRouter);
 
 // Add after your routes but before error handler
 app.use((req, res) => {
